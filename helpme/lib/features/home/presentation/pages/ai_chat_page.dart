@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:helpme/features/home/data/services/gemini_service.dart';
 import 'package:helpme/features/home/data/services/chat_storage_service.dart';
+import 'package:helpme/features/home/presentation/pages/survey_page.dart';
 
 class AiChatPage extends StatefulWidget {
   const AiChatPage({super.key});
@@ -18,6 +19,7 @@ class _AiChatPageState extends State<AiChatPage> {
   final List<Map<String, String>> _messages = [];
   bool _isLoading = false;
   bool _isInitializing = true;
+  bool _showSurvey = false;
 
   @override
   void initState() {
@@ -31,12 +33,19 @@ class _AiChatPageState extends State<AiChatPage> {
     try {
       final history = await _storageService.getChatHistory();
       if (mounted) {
-        setState(() {
-          _messages.addAll(history);
-          _isInitializing = false;
-        });
-        _geminiService.initChat(history);
-        _scrollToBottom();
+        if (history.isEmpty) {
+          setState(() {
+            _showSurvey = true;
+            _isInitializing = false;
+          });
+        } else {
+          setState(() {
+            _messages.addAll(history);
+            _isInitializing = false;
+          });
+          _geminiService.initChat(history);
+          _scrollToBottom();
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -48,16 +57,48 @@ class _AiChatPageState extends State<AiChatPage> {
     }
   }
 
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
+  Future<void> _onSurveyComplete(Map<String, String> results) async {
+    setState(() {
+      _showSurvey = false;
+      _isLoading = true;
     });
+
+    _geminiService.startWithSurvey(results);
+
+    // Create a system message for Supabase to persist the survey results context
+    final surveySummary = results.entries
+        .map((e) => "${e.key}: ${e.value}")
+        .join("\n");
+    await _storageService.saveMessage(
+      content: "Initial Assessment:\n$surveySummary",
+      role: 'user',
+    );
+
+    // Get initial AI response based on survey
+    try {
+      final responseText = await _geminiService.sendMessage(
+        "Please start our session based on my survey results.",
+      );
+      if (responseText != null) {
+        await _storageService.saveMessage(content: responseText, role: 'ai');
+        setState(() {
+          _messages.add({'role': 'ai', 'content': responseText});
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   Future<void> _sendMessage() async {
@@ -72,15 +113,11 @@ class _AiChatPageState extends State<AiChatPage> {
     _scrollToBottom();
 
     try {
-      // Save user message to Supabase
       await _storageService.saveMessage(content: text, role: 'user');
-
       final responseText = await _geminiService.sendMessage(text);
 
       if (responseText != null) {
-        // Save AI response to Supabase
         await _storageService.saveMessage(content: responseText, role: 'ai');
-
         setState(() {
           _messages.add({'role': 'ai', 'content': responseText});
           _isLoading = false;
@@ -102,6 +139,10 @@ class _AiChatPageState extends State<AiChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_showSurvey) {
+      return SurveyPage(onComplete: _onSurveyComplete);
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFFBFBFB),
       appBar: AppBar(

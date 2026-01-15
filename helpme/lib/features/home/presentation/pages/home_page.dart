@@ -126,12 +126,23 @@ class HomePage extends StatelessWidget {
                     const Color(0xFFE0F2F1),
                     const Color(0xFF8DBDBA),
                   ),
-                  const SizedBox(width: 16),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
                   _buildQuickToolCard(
                     'Meditation',
                     Icons.self_improvement_outlined,
                     const Color(0xFFFFF3E0),
                     const Color(0xFFE6AD6C),
+                  ),
+                  const SizedBox(width: 16),
+                  _buildQuickToolCard(
+                    'Survey',
+                    Icons.assignment_outlined,
+                    const Color(0xFFF3E5F5),
+                    const Color(0xFF9575CD),
                   ),
                 ],
               ),

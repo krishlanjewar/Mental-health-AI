@@ -55,7 +55,7 @@ Your goal is not to "fix" the student, but to help them think clearly, regulate 
     if (apiKey == null) {
       throw Exception('GEMINI_API_KEY not found in .env file');
     }
-    _model = GenerativeModel(model: 'gemini-1.5-flash-latest', apiKey: apiKey);
+    _model = GenerativeModel(model: 'gemini-2.5', apiKey: apiKey);
     initChat([]); // Default empty history
   }
 

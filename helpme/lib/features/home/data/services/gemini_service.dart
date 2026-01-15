@@ -59,6 +59,21 @@ Your goal is not to "fix" the student, but to help them think clearly, regulate 
     initChat([]); // Default empty history
   }
 
+  void startWithSurvey(Map<String, String> surveyResults) {
+    final summary = surveyResults.entries
+        .map((e) => "${e.key}: ${e.value}")
+        .join("\n");
+
+    _chat = _model.startChat(
+      history: [
+        Content.text(_systemPrompt),
+        Content.text(
+          "Here is the patient's initial assessment:\n$summary\n\nPlease use this information to assess their stress level and start our session accordingly. Begin by acknowledging these results empathetically.",
+        ),
+      ],
+    );
+  }
+
   void initChat(List<Map<String, String>> history) {
     _chat = _model.startChat(
       history: [

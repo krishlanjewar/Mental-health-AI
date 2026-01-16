@@ -80,123 +80,145 @@ class _CounselorDashboardState extends State<CounselorDashboard> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _appointments.isEmpty
-          ? Center(
-              child: Text(
-                'No appointments yet.',
-                style: GoogleFonts.outfit(color: Colors.grey),
-              ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(20),
-              itemCount: _appointments.length,
-              itemBuilder: (context, index) {
-                final appt = _appointments[index];
-                final status = appt['status'] as String;
+          : RefreshIndicator(
+              onRefresh: _loadAppointments,
+              color: const Color(0xFF8DBDBA),
+              child: _appointments.isEmpty
+                  ? Center(
+                      child: Text(
+                        'No bookings yet.',
+                        style: GoogleFonts.outfit(color: Colors.grey),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(20),
+                      itemCount: _appointments.length,
+                      itemBuilder: (context, index) {
+                        final appt = _appointments[index];
+                        final status = appt['status'] as String;
+                        final studentName = appt['student_name'] ?? 'Student';
 
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.02),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Student ID: ${appt['student_id'].toString().substring(0, 8)}...',
-                            style: GoogleFonts.outfit(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          _buildStatusBadge(status),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.calendar_today,
-                            size: 16,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            appt['appointment_date'],
-                            style: GoogleFonts.outfit(color: Colors.grey[700]),
-                          ),
-                          const SizedBox(width: 20),
-                          const Icon(
-                            Icons.access_time,
-                            size: 16,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            appt['appointment_time'],
-                            style: GoogleFonts.outfit(color: Colors.grey[700]),
-                          ),
-                        ],
-                      ),
-                      if (status == 'pending') ...[
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: () =>
-                                    _updateStatus(appt['id'], 'cancelled'),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: Colors.red,
-                                  side: const BorderSide(color: Colors.red),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Decline',
-                                  style: GoogleFonts.outfit(),
-                                ),
+                        return Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.02),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () =>
-                                    _updateStatus(appt['id'], 'confirmed'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF8DBDBA),
-                                  foregroundColor: Colors.white,
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    studentName,
+                                    style: GoogleFonts.outfit(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                   ),
-                                ),
-                                child: Text(
-                                  'Confirm',
-                                  style: GoogleFonts.outfit(),
-                                ),
+                                  _buildStatusBadge(status),
+                                ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ],
-                  ),
-                );
-              },
+                              const SizedBox(height: 12),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.calendar_today,
+                                    size: 16,
+                                    color: Colors.grey,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    appt['appointment_date'],
+                                    style: GoogleFonts.outfit(
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  const Icon(
+                                    Icons.access_time,
+                                    size: 16,
+                                    color: Colors.grey,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    appt['appointment_time'],
+                                    style: GoogleFonts.outfit(
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              if (status == 'pending') ...[
+                                const SizedBox(height: 20),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: OutlinedButton(
+                                        onPressed: () => _updateStatus(
+                                          appt['id'],
+                                          'cancelled',
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: Colors.red,
+                                          side: const BorderSide(
+                                            color: Colors.red,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Decline',
+                                          style: GoogleFonts.outfit(),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () => _updateStatus(
+                                          appt['id'],
+                                          'confirmed',
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(
+                                            0xFF8DBDBA,
+                                          ),
+                                          foregroundColor: Colors.white,
+                                          elevation: 0,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Confirm',
+                                          style: GoogleFonts.outfit(),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ],
+                          ),
+                        );
+                      },
+                    ),
             ),
     );
   }

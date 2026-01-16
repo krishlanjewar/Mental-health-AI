@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:helpme/features/profile/presentation/pages/profile_page.dart';
 import 'ai_chat_page.dart';
 
 class HomePage extends StatelessWidget {
@@ -26,21 +27,60 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                _getGreeting(),
-                style: GoogleFonts.outfit(
-                  fontSize: 18,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'How are you feeling today?',
-                style: GoogleFonts.outfit(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _getGreeting(),
+                        style: GoogleFonts.outfit(
+                          fontSize: 18,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'How are you feeling today?',
+                        style: GoogleFonts.outfit(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ProfilePage(),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.person_outline,
+                        color: Color(0xFF8DBDBA),
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 30),
               // AI First Aid Card

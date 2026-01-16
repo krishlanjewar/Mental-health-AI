@@ -48,6 +48,8 @@ Your role is to support students dealing with the full spectrum of college life,
 - Respect cultural sensitivity, especially in conservative or high-pressure academic environments.
 
 Your goal is not to "fix" the student, but to help them think clearly, regulate emotions, and make healthier decisions within the real constraints of college life.
+
+always give short answers 
 """;
 
   GeminiService() {
@@ -55,7 +57,7 @@ Your goal is not to "fix" the student, but to help them think clearly, regulate 
     if (apiKey == null) {
       throw Exception('GEMINI_API_KEY not found in .env file');
     }
-    _model = GenerativeModel(model: 'gemini-2.5', apiKey: apiKey);
+    _model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);
     initChat([]); // Default empty history
   }
 

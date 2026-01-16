@@ -38,4 +38,25 @@ class CommunityService {
         .update({'support_count': currentCount + 1})
         .eq('id', postId);
   }
+
+  Future<void> createReply(String postId, String content) async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) throw Exception("User not logged in");
+
+    await _supabase.from('community_replies').insert({
+      'post_id': postId,
+      'user_id': userId,
+      'content': content,
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> getReplies(String postId) async {
+    final response = await _supabase
+        .from('community_replies')
+        .select()
+        .eq('post_id', postId)
+        .order('created_at', ascending: true);
+
+    return List<Map<String, dynamic>>.from(response);
+  }
 }

@@ -17,6 +17,7 @@ class _BookingPageState extends State<BookingPage> {
   String? _selectedTime;
   bool _isLoading = false;
   bool _isCounselor = false;
+  bool _isCheckingStatus = true;
 
   final List<String> _timeSlots = [
     '09:00 AM',
@@ -40,6 +41,7 @@ class _BookingPageState extends State<BookingPage> {
     if (mounted) {
       setState(() {
         _isCounselor = status;
+        _isCheckingStatus = false;
       });
     }
   }
@@ -124,6 +126,14 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isCheckingStatus) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (_isCounselor) {
+      return const CounselorDashboard();
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFFBFBFB),
       appBar: AppBar(
@@ -137,25 +147,6 @@ class _BookingPageState extends State<BookingPage> {
             color: Colors.black87,
           ),
         ),
-        actions: [
-          if (_isCounselor)
-            IconButton(
-              icon: const Icon(
-                Icons.admin_panel_settings_outlined,
-                color: Color(0xFF8DBDBA),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const CounselorDashboard(),
-                  ),
-                );
-              },
-              tooltip: 'Counselor Dashboard',
-            ),
-          const SizedBox(width: 8),
-        ],
         centerTitle: false,
       ),
       body: SingleChildScrollView(

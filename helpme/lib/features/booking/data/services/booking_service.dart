@@ -8,11 +8,15 @@ class BookingService {
     required DateTime date,
     required String time,
   }) async {
-    final userId = _supabase.auth.currentUser?.id;
+    final user = _supabase.auth.currentUser;
+    final userId = user?.id;
+    final studentName = user?.userMetadata?['full_name'] ?? 'Anonymous Student';
+
     if (userId == null) throw Exception("User not logged in");
 
     await _supabase.from('appointments').insert({
       'student_id': userId,
+      'student_name': studentName,
       'counselor_name': counselorName,
       'appointment_date': date.toIso8601String().split('T')[0],
       'appointment_time': time,

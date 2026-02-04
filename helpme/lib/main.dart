@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'features/navigation/presentation/pages/main_navigation_screen.dart';
 import 'features/auth/presentation/pages/login_page.dart';
 
@@ -13,6 +14,9 @@ Future<void> main() async {
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
   );
+
+  await Hive.initFlutter();
+  await Hive.openBox('journal');
 
   runApp(const MyApp());
 }

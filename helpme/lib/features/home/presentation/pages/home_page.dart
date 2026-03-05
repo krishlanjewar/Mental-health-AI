@@ -8,6 +8,7 @@ import 'journaling_page.dart';
 import 'meditation_page.dart';
 import 'survey_page.dart';
 import 'helpline_page.dart';
+import 'hospital_map_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -144,6 +145,18 @@ class _HomePageState extends State<HomePage>
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const HelpLinePage()),
+          );
+        },
+      },
+      {
+        'title': 'Hospital',
+        'icon': Icons.local_hospital_outlined,
+        'bgColor': const Color(0xFFE3F2FD),
+        'iconColor': const Color(0xFF64B5F6),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HospitalMapPage()),
           );
         },
       },

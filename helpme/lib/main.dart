@@ -37,9 +37,10 @@ class MyApp extends StatelessWidget {
         ),
         textTheme: GoogleFonts.outfitTextTheme(),
       ),
-      home: Supabase.instance.client.auth.currentSession != null
-          ? const MainNavigationScreen()
-          : const LoginPage(),
+      //  home: Supabase.instance.client.auth.currentSession != null
+      //     ? const MainNavigationScreen()
+      //     : const LoginPage(),
+      home: const MainNavigationScreen(),
     );
   }
 }

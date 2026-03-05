@@ -7,6 +7,7 @@ import 'breathing_page.dart';
 import 'journaling_page.dart';
 import 'meditation_page.dart';
 import 'survey_page.dart';
+import 'helpline_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -131,6 +132,18 @@ class _HomePageState extends State<HomePage>
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ExplorePage()),
+          );
+        },
+      },
+      {
+        'title': 'Help Line',
+        'icon': Icons.phone_in_talk_outlined,
+        'bgColor': const Color(0xFFFFEbee),
+        'iconColor': const Color(0xFFE57373),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const HelpLinePage()),
           );
         },
       },

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:helpme/features/resources/presentation/pages/resource_player_page.dart';
 
 class ResourcesPage extends StatefulWidget {
   const ResourcesPage({super.key});
@@ -20,57 +21,64 @@ class _ResourcesPageState extends State<ResourcesPage> {
     'Exercise',
   ];
 
-  final List<Map<String, dynamic>> _allResources = [
-    {
-      'title': 'Managing Exam Stress',
-      'type': 'Video',
-      'duration': '12 min',
-      'icon': Icons.videocam_outlined,
-      'category': 'Video',
-    },
-    {
-      'title': 'Guided Morning Meditation',
-      'type': 'Audio',
-      'duration': '10 min',
-      'icon': Icons.graphic_eq_outlined,
-      'category': 'Audio',
-    },
-    {
-      'title': 'Understanding Anxiety',
-      'type': 'Article',
-      'duration': '8 min read',
-      'icon': Icons.description_outlined,
-      'category': 'Article',
-    },
-    {
-      'title': '5-Minute Mindful Breathing',
-      'type': 'Exercise',
-      'duration': '5 min',
-      'icon': Icons.spa_outlined,
-      'category': 'Exercise',
-    },
-    {
-      'title': 'Building Resilience',
-      'type': 'Video',
-      'duration': '15 min',
-      'icon': Icons.accessibility_new_outlined,
-      'category': 'Video',
-    },
-    {
-      'title': 'Sleep Hygiene Tips',
-      'type': 'Article',
-      'duration': '5 min read',
-      'icon': Icons.bed_outlined,
-      'category': 'Article',
-    },
-    {
-      'title': 'Focus Music Playlist',
-      'type': 'Audio',
-      'duration': '45 min',
-      'icon': Icons.music_note_outlined,
-      'category': 'Audio',
-    },
-  ];
+   final List<Map<String, dynamic>> _allResources = [
+
+{
+'title': 'Managing Exam Stress',
+'type': 'Video',
+'duration': '2.5 min',
+'icon': Icons.videocam_outlined,
+'category': 'Video',
+'link': 'https://youtu.be/-RZ86OB9hw4'
+},
+
+{
+'title': 'Guided Morning Meditation',
+'type': 'Audio',
+'duration': '10 min',
+'icon': Icons.graphic_eq_outlined,
+'category': 'Audio',
+'link': 'https://open.spotify.com/episode/63YMG884MiE8Y8hgnxxfTW?si=85dfy4OyR9eKM3HrLPxp3w&t=0&pi=ML07IybDTx2Ph'
+},
+
+{
+'title': 'Understanding Anxiety',
+'type': 'Article',
+'duration': '8 min read',
+'icon': Icons.description_outlined,
+'category': 'Article',
+'link': 'https://en.wikipedia.org/wiki/Anxiety'
+},
+
+{
+'title': '5-Minute Mindful Breathing',
+'type': 'Audio',
+'duration': '5 min',
+'icon': Icons.spa_outlined,
+'category': 'Exercise',
+'link': 'https://open.spotify.com/episode/4q0GZmT7l9gxNSHECLqSJb?si=JCV-uGVYSjyBOPdiuC2CwQ'
+},
+
+{
+'title': 'Building Resilience',
+'type': 'Video',
+'duration': '4 min',
+'icon': Icons.accessibility_new_outlined,
+'category': 'Video',
+'link': 'https://youtu.be/GLAdRgft7pU'
+},
+
+{
+'title': 'Sleep Hygiene Tips',
+'type': 'Article',
+'duration': '5 min read',
+'icon': Icons.bed_outlined,
+'category': 'Article',
+'link': 'https://en.wikipedia.org/wiki/Sleep_hygiene'
+},
+
+];
+
 
   @override
   Widget build(BuildContext context) {
@@ -97,11 +105,9 @@ class _ResourcesPageState extends State<ResourcesPage> {
             color: Colors.black87,
           ),
         ),
-        centerTitle: false,
       ),
       body: Column(
         children: [
-          // Search Bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Container(
@@ -134,7 +140,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
             ),
           ),
 
-          // Category Chips
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -155,17 +160,11 @@ class _ResourcesPageState extends State<ResourcesPage> {
                     selectedColor: const Color(0xFF8DBDBA),
                     labelStyle: GoogleFonts.outfit(
                       color: isSelected ? Colors.white : Colors.grey[600],
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.normal,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.normal,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(
-                        color: isSelected
-                            ? Colors.transparent
-                            : Colors.grey.withOpacity(0.2),
-                      ),
                     ),
                     showCheckmark: false,
                   ),
@@ -174,7 +173,6 @@ class _ResourcesPageState extends State<ResourcesPage> {
             ),
           ),
 
-          // Resource List
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -185,6 +183,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
                   resource['title'],
                   '${resource['type']} • ${resource['duration']}',
                   resource['icon'],
+                  resource['link'],
                 );
               },
             ),
@@ -194,7 +193,7 @@ class _ResourcesPageState extends State<ResourcesPage> {
     );
   }
 
-  Widget _buildResourceItem(String title, String subtitle, IconData icon) {
+  Widget _buildResourceItem(String title, String subtitle, IconData icon, String link) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -227,7 +226,18 @@ class _ResourcesPageState extends State<ResourcesPage> {
           style: GoogleFonts.outfit(color: Colors.grey, fontSize: 14),
         ),
         trailing: const Icon(Icons.chevron_right, color: Colors.grey),
-        onTap: () {},
+        onTap: () {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ResourcePlayerPage(
+        title: title,
+        type: subtitle.split(' • ')[0],
+        link: link,
+      ),
+    ),
+  );
+},
       ),
     );
   }

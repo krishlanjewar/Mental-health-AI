@@ -2,8 +2,10 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class GeminiService {
-  late final GenerativeModel _model;
+  late GenerativeModel _model;
   late ChatSession _chat;
+  late List<String> _apiKeys;
+  int _currentKeyIndex = 0;
 
   static const String _systemPrompt = """
 You are a specialist psychologist AI focused on college and university students (ages ~17–25).
@@ -53,12 +55,46 @@ always give short answers
 """;
 
   GeminiService() {
-    final apiKey = dotenv.env['GEMINI_API_KEY'];
-    if (apiKey == null) {
-      throw Exception('GEMINI_API_KEY not found in .env file');
+    _apiKeys = [];
+    final keysString = dotenv.env['GEMINI_API_KEYS'];
+    if (keysString != null && keysString.isNotEmpty) {
+      _apiKeys = keysString
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
     }
-    _model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: apiKey);
+    if (_apiKeys.isEmpty) {
+      final singleKey = dotenv.env['GEMINI_API_KEY'];
+      if (singleKey != null && singleKey.isNotEmpty) {
+        _apiKeys.add(singleKey);
+      }
+    }
+
+    if (_apiKeys.isEmpty) {
+      throw Exception(
+        'GEMINI_API_KEY or GEMINI_API_KEYS not found in .env file. Please provide a comma-separated list of keys in GEMINI_API_KEYS.',
+      );
+    }
+
+    _initializeModel();
     initChat([]); // Default empty history
+  }
+
+  void _initializeModel() {
+    _model = GenerativeModel(
+      model: 'gemini-2.5-flash',
+      apiKey: _apiKeys[_currentKeyIndex],
+    );
+  }
+
+  void _rotateKeyAndRetryContext() {
+    if (_apiKeys.length <= 1) return;
+    _currentKeyIndex = (_currentKeyIndex + 1) % _apiKeys.length;
+    _initializeModel();
+    // Recreate the chat session keeping the existing history
+    final history = _chat.history.toList();
+    _chat = _model.startChat(history: history);
   }
 
   void startWithSurvey(Map<String, String> surveyResults) {
@@ -90,11 +126,25 @@ always give short answers
   }
 
   Future<String?> sendMessage(String message) async {
-    try {
-      final response = await _chat.sendMessage(Content.text(message));
-      return response.text;
-    } catch (e) {
-      return 'Error: $e';
+    for (int i = 0; i < _apiKeys.length; i++) {
+      try {
+        final response = await _chat.sendMessage(Content.text(message));
+        return response.text;
+      } catch (e) {
+        final errorString = e.toString().toLowerCase();
+        final isRateLimitError =
+            errorString.contains('429') ||
+            errorString.contains('quota') ||
+            errorString.contains('exhausted');
+
+        if (isRateLimitError && i < _apiKeys.length - 1) {
+          // Switch to the next key and retry in the next loop iteration
+          _rotateKeyAndRetryContext();
+          continue;
+        }
+        return 'Error: $e';
+      }
     }
+    return 'Error: All API keys exhausted or rate limited.';
   }
 }

@@ -221,7 +221,7 @@ class _CommunityPageState extends State<CommunityPage> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.02),
+            color: Colors.black.withValues(alpha: 0.02),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -262,7 +262,7 @@ class _CommunityPageState extends State<CommunityPage> {
             ),
           ),
           const SizedBox(height: 20),
-          Divider(color: Colors.grey.withOpacity(0.1)),
+          Divider(color: Colors.grey.withValues(alpha: 0.1)),
           Row(
             children: [
               _buildActionButton(

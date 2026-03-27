@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class YoutubeAudioService {
@@ -31,28 +32,25 @@ class YoutubeAudioService {
       // Extract video ID from URL if needed
       final videoId = _extractVideoId(videoUrlOrId);
       if (videoId == null || videoId.isEmpty) {
-        print('Invalid video ID: $videoId');
+        debugPrint('Invalid video ID: $videoId');
         return null;
       }
 
-      print('Extracting audio for video ID: $videoId');
+      debugPrint('Extracting audio for video ID: $videoId');
 
       // Get video manifest
       final manifest = await _yt.videos.streamsClient.getManifest(videoId);
-      print('Manifest retrieved: ${manifest.audioOnly.length} audio streams');
+      debugPrint('Manifest retrieved: ${manifest.audioOnly.length} audio streams');
 
       // Get the best audio-only stream
       final audioStream = manifest.audioOnly.withHighestBitrate();
 
-      if (audioStream != null) {
-        print('Audio stream URL: ${audioStream.url}');
-        return audioStream.url.toString();
-      }
+      debugPrint('Audio stream URL: ${audioStream.url}');
+      return audioStream.url.toString();
+    
 
-      print('No audio stream found');
-      return null;
     } catch (e) {
-      print('Error extracting audio: $e');
+      debugPrint('Error extracting audio: $e');
       return null;
     }
   }

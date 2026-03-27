@@ -65,7 +65,7 @@ class _HospitalMapPageState extends State<HospitalMapPage> {
 
       // Permissions are granted, get the position.
       _currentPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
 
       // Add marker for current user location
@@ -297,7 +297,7 @@ class _HospitalMapPageState extends State<HospitalMapPage> {
         ),
         if (_isLoading)
           Container(
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
             child: const Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

@@ -180,16 +180,16 @@ class _MeditationPageState extends State<MeditationPage> {
               color: Colors.white,
               padding: const EdgeInsets.all(16),
               height: 300, // Fixed height for consistency
-              child: _getSpotifyEmbedUrl(_meditations.firstWhere((m) => m['key'] == _playing)?['videoUrl'] ?? '') != null
+              child: _getSpotifyEmbedUrl(_meditations.firstWhere((m) => m['key'] == _playing)['videoUrl'] ?? '') != null
                   ? WebViewWidget(
                       controller: WebViewController()
                         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                        ..loadRequest(Uri.parse(_getSpotifyEmbedUrl(_meditations.firstWhere((m) => m['key'] == _playing)?['videoUrl'] ?? '')!)),
+                        ..loadRequest(Uri.parse(_getSpotifyEmbedUrl(_meditations.firstWhere((m) => m['key'] == _playing)['videoUrl'] ?? '')!)),
                     )
                   : Column(
                       children: [
                         Text(
-                          _meditations.firstWhere((m) => m['key'] == _playing)?['title'] ?? '',
+                          _meditations.firstWhere((m) => m['key'] == _playing)['title'] ?? '',
                           style: GoogleFonts.outfit(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -201,9 +201,9 @@ class _MeditationPageState extends State<MeditationPage> {
                           data: SliderThemeData(
                             trackHeight: 4,
                             activeTrackColor: const Color(0xFFE65100),
-                            inactiveTrackColor: const Color(0xFFE65100).withOpacity(0.2),
+                            inactiveTrackColor: const Color(0xFFE65100).withValues(alpha: 0.2),
                             thumbColor: const Color(0xFFE65100),
-                            overlayColor: const Color(0xFFE65100).withOpacity(0.5),
+                            overlayColor: const Color(0xFFE65100).withValues(alpha: 0.5),
                           ),
                           child: Slider(
                             value: _position.inSeconds.toDouble(),
@@ -258,7 +258,7 @@ class _MeditationPageState extends State<MeditationPage> {
                 ),
                 if (_isLoading)
                   Container(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -302,7 +302,7 @@ class _MeditationPageState extends State<MeditationPage> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),

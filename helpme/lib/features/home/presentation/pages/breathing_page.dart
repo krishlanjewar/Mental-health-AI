@@ -62,13 +62,13 @@ class _BreathingPageState extends State<BreathingPage>
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          const Color(0xFFCD9F8D).withOpacity(0.4),
-                          const Color(0xFFCD9F8D).withOpacity(0.8),
+                          const Color(0xFFCD9F8D).withValues(alpha: 0.4),
+                          const Color(0xFFCD9F8D).withValues(alpha: 0.8),
                         ],
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFCD9F8D).withOpacity(0.3),
+                          color: const Color(0xFFCD9F8D).withValues(alpha: 0.3),
                           blurRadius: 30,
                           spreadRadius: 20,
                         ),

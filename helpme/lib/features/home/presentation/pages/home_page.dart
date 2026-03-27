@@ -212,7 +212,7 @@ class _HomePageState extends State<HomePage>
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -257,7 +257,7 @@ class _HomePageState extends State<HomePage>
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
+                                    color: Colors.black.withValues(alpha: 0.05),
                                     blurRadius: 10,
                                     offset: const Offset(0, 4),
                                   ),
@@ -297,7 +297,7 @@ class _HomePageState extends State<HomePage>
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF8DBDBA).withOpacity(0.3),
+                        color: const Color(0xFF8DBDBA).withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -311,7 +311,7 @@ class _HomePageState extends State<HomePage>
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(
@@ -335,7 +335,7 @@ class _HomePageState extends State<HomePage>
                         'Talk to our interactive chatbot for instant coping support. It\'s safe and available 24/7.',
                         style: GoogleFonts.outfit(
                           fontSize: 15,
-                          color: Colors.white.withOpacity(0.95),
+                          color: Colors.white.withValues(alpha: 0.95),
                           height: 1.5,
                         ),
                       ),

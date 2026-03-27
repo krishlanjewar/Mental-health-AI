@@ -241,10 +241,10 @@ class _ResourcePlayerPageState extends State<ResourcePlayerPage> {
                                           trackHeight: 4,
                                           activeTrackColor: const Color(0xFF8DBDBA),
                                           inactiveTrackColor:
-                                              const Color(0xFF8DBDBA).withOpacity(0.2),
+                                              const Color(0xFF8DBDBA).withValues(alpha: 0.2),
                                           thumbColor: const Color(0xFF8DBDBA),
                                           overlayColor: const Color(0xFF8DBDBA)
-                                              .withOpacity(0.5),
+                                              .withValues(alpha: 0.5),
                                         ),
                                         child: Slider(
                                           value: _position.inSeconds.toDouble(),
@@ -306,7 +306,7 @@ class _ResourcePlayerPageState extends State<ResourcePlayerPage> {
                         ),
                         if (_isLoading)
                           Container(
-                            color: Colors.black.withOpacity(0.3),
+                            color: Colors.black.withValues(alpha: 0.3),
                             child: Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,

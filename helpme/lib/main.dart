@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:helpme/features/auth/presentation/pages/login_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -36,10 +37,10 @@ class MyApp extends StatelessWidget {
         ),
         textTheme: GoogleFonts.outfitTextTheme(),
       ),
-      //  home: Supabase.instance.client.auth.currentSession != null
-      //     ? const MainNavigationScreen()
-      //     : const LoginPage(),
-      home: const MainNavigationScreen(),
+       home: Supabase.instance.client.auth.currentSession != null
+          ? const MainNavigationScreen()
+          : const LoginPage(),
+      // home: const MainNavigationScreen(),
     );
   }
 }

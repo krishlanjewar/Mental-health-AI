@@ -293,11 +293,11 @@ class _HomePageState extends State<HomePage>
                   width: double.infinity,
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF8DBDBA),
+                    color: const Color.fromARGB(255, 27, 220, 127),
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF8DBDBA).withValues(alpha: 0.3),
+                        color: const Color.fromARGB(255, 200, 133, 86).withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -353,7 +353,7 @@ class _HomePageState extends State<HomePage>
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
-                            foregroundColor: const Color(0xFF8DBDBA),
+                            foregroundColor: const Color.fromARGB(255, 157, 141, 189),
                             elevation: 0,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(

@@ -14,9 +14,20 @@ class BookingService {
 
     if (userId == null) throw Exception("User not logged in");
 
+    // Retrieve counselor ID dynamically using the name
+    final counselorData = await _supabase
+        .from('counselors')
+        .select('user_id')
+        .eq('name', counselorName)
+        .maybeSingle();
+
+    final counselorId = counselorData?['user_id'];
+    if (counselorId == null) throw Exception("Counselor not found");
+
     await _supabase.from('appointments').insert({
       'student_id': userId,
       'student_name': studentName,
+      'counselor_id': counselorId,
       'counselor_name': counselorName,
       'appointment_date': date.toIso8601String().split('T')[0],
       'appointment_time': time,
@@ -38,9 +49,13 @@ class BookingService {
   }
 
   Future<List<Map<String, dynamic>>> getCounselorAppointments() async {
+    final userId = _supabase.auth.currentUser?.id;
+    if (userId == null) return [];
+
     final response = await _supabase
         .from('appointments')
         .select()
+        .eq('counselor_id', userId)
         .order('appointment_date', ascending: true);
 
     return List<Map<String, dynamic>>.from(response);

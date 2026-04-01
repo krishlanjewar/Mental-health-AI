@@ -18,6 +18,8 @@ class _BookingPageState extends State<BookingPage> {
   bool _isLoading = false;
   bool _isCounselor = false;
   bool _isCheckingStatus = true;
+  List<Map<String, dynamic>> _myAppointments = [];
+  bool _isLoadingAppointments = true;
 
   final List<String> _timeSlots = [
     '09:00 AM',
@@ -34,6 +36,23 @@ class _BookingPageState extends State<BookingPage> {
   void initState() {
     super.initState();
     _checkCounselorStatus();
+    _loadMyAppointments();
+  }
+
+  Future<void> _loadMyAppointments() async {
+    try {
+      final appointments = await _bookingService.getMyAppointments();
+      if (mounted) {
+        setState(() {
+          _myAppointments = appointments;
+          _isLoadingAppointments = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isLoadingAppointments = false);
+      }
+    }
   }
 
   Future<void> _checkCounselorStatus() async {
@@ -90,6 +109,7 @@ class _BookingPageState extends State<BookingPage> {
       );
 
       if (mounted) {
+        _loadMyAppointments(); // Refresh the list
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -320,6 +340,90 @@ class _BookingPageState extends State<BookingPage> {
                       ),
               ),
             ),
+            const SizedBox(height: 40),
+            Text(
+              'My Appointments',
+              style: GoogleFonts.outfit(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            _isLoadingAppointments
+                ? const Center(child: CircularProgressIndicator())
+                : _myAppointments.isEmpty
+                    ? Text(
+                        'You have no appointments booked.',
+                        style: GoogleFonts.outfit(color: Colors.grey),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: _myAppointments.length,
+                        itemBuilder: (context, index) {
+                          final appt = _myAppointments[index];
+                          final status = appt['status'] as String;
+                          Color statusColor = status == 'confirmed'
+                              ? Colors.green
+                              : (status == 'cancelled'
+                                  ? Colors.red
+                                  : Colors.orange);
+
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.grey[200]!),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'With ${appt['counselor_name'] ?? 'Counselor'}',
+                                      style: GoogleFonts.outfit(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '${appt['appointment_date']} at ${appt['appointment_time']}',
+                                      style: GoogleFonts.outfit(
+                                        color: Colors.grey[600],
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: statusColor.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    status.toUpperCase(),
+                                    style: GoogleFonts.outfit(
+                                      color: statusColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
           ],
         ),
       ),

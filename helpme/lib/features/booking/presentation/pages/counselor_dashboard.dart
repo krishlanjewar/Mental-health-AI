@@ -46,7 +46,7 @@ class _CounselorDashboardState extends State<CounselorDashboard> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Appointment $status'),
-            backgroundColor: status == 'confirmed' ? Colors.green : Colors.red,
+            backgroundColor: status == 'accepted' ? Colors.green : Colors.red,
           ),
         );
       }
@@ -167,7 +167,7 @@ class _CounselorDashboardState extends State<CounselorDashboard> {
                                       child: OutlinedButton(
                                         onPressed: () => _updateStatus(
                                           appt['id'],
-                                          'cancelled',
+                                          'declined',
                                         ),
                                         style: OutlinedButton.styleFrom(
                                           foregroundColor: Colors.red,
@@ -191,7 +191,7 @@ class _CounselorDashboardState extends State<CounselorDashboard> {
                                       child: ElevatedButton(
                                         onPressed: () => _updateStatus(
                                           appt['id'],
-                                          'confirmed',
+                                          'accepted',
                                         ),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: const Color(
@@ -226,9 +226,10 @@ class _CounselorDashboardState extends State<CounselorDashboard> {
   Widget _buildStatusBadge(String status) {
     Color color;
     switch (status) {
-      case 'confirmed':
+      case 'accepted':
         color = Colors.green;
         break;
+      case 'declined':
       case 'cancelled':
         color = Colors.red;
         break;

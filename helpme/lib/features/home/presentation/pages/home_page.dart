@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:helpme/features/profile/presentation/pages/profile_page.dart';
-import 'explore_page.dart';
+import 'package:helpme/features/explore/presentation/pages/explore_page.dart';
 import 'ai_chat_page.dart';
 import 'breathing_page.dart';
 import 'journaling_page.dart';
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage>
         'onTap': () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const ExplorePage()),
+            MaterialPageRoute(builder: (context) => const ExplorePageReddit()),
           );
         },
       },

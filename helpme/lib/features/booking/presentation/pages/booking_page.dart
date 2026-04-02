@@ -363,9 +363,9 @@ class _BookingPageState extends State<BookingPage> {
                         itemBuilder: (context, index) {
                           final appt = _myAppointments[index];
                           final status = appt['status'] as String;
-                          Color statusColor = status == 'confirmed'
+                          Color statusColor = status == 'accepted'
                               ? Colors.green
-                              : (status == 'cancelled'
+                              : (status == 'declined' || status == 'cancelled'
                                   ? Colors.red
                                   : Colors.orange);
 
@@ -377,48 +377,86 @@ class _BookingPageState extends State<BookingPage> {
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(color: Colors.grey[200]!),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      'With ${appt['counselor_name'] ?? 'Counselor'}',
-                                      style: GoogleFonts.outfit(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'With ${appt['counselor_name'] ?? 'Counselor'}',
+                                          style: GoogleFonts.outfit(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          '${appt['appointment_date']} at ${appt['appointment_time']}',
+                                          style: GoogleFonts.outfit(
+                                            color: Colors.grey[600],
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      '${appt['appointment_date']} at ${appt['appointment_time']}',
-                                      style: GoogleFonts.outfit(
-                                        color: Colors.grey[600],
-                                        fontSize: 14,
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: statusColor.withValues(alpha: 0.1),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        status.toUpperCase(),
+                                        style: GoogleFonts.outfit(
+                                          color: statusColor,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 4,
+                                if (status == 'pending' || status == 'accepted') ...[
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      TextButton(
+                                        onPressed: () async {
+                                          try {
+                                            await _bookingService.updateAppointmentStatus(appt['id'], 'cancelled');
+                                            _loadMyAppointments();
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text('Appointment cancelled')),
+                                              );
+                                            }
+                                          } catch (e) {
+                                            if (context.mounted) {
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(content: Text('Failed to cancel: $e')),
+                                              );
+                                            }
+                                          }
+                                        },
+                                        child: Text(
+                                          'Cancel Appointment',
+                                          style: GoogleFonts.outfit(
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: statusColor.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(
-                                    status.toUpperCase(),
-                                    style: GoogleFonts.outfit(
-                                      color: statusColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
+                                ],
                               ],
                             ),
                           );
